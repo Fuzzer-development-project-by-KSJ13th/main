@@ -1,1 +1,53 @@
 <h1> 분석 기능 메인 화면입니다. </h1>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<canvas id="myChart" width="400" height="200"></canvas>
+
+<script>
+    // 서버로부터 JSON 데이터를 가져오는 비동기 요청
+    fetch('/cvss-data/')
+        .then(response => response.json())  // JSON 응답을 파싱
+        .then(data => {
+            console.log(data);  
+            
+            const cve_id = data.cve_id; 
+            const cvss_val = data.cvss_value;  
+
+            // 차트 
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',  
+                data: {
+                    labels: cve_id,  // 레이블 데이터를 차트에 넣음
+                    datasets: [{
+                        label: '# of Votes',
+                        data: cvss_val,  // 차트에 들어갈 실제 값
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',  
+                        borderColor: 'rgba(75, 192, 192, 1)', 
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true  
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error:', error));  
+</script>
+
+</body>
+</html>
