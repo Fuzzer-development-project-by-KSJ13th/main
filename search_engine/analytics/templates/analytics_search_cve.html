@@ -8,7 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<canvas id="myChart" width="400" height="200"></canvas>
+<canvas id="cvss_Chart" width="400" height="200"></canvas>
+<canvas id="epss_Chart" width="400" height="200"></canvas>
 <script>
     // 서버로부터 JSON 데이터를 가져오는 비동기 요청
     fetch('/cvss-data/')
@@ -16,16 +17,38 @@
         .then(data => {
             console.log(data);
             const cve_id = data.cve_id; 
-            const cvss_val = data.cvss_value;  
+            const cvss_val = data.cvss_value;
+            const epss_val = data.epss;
             // 차트 
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const myChart = new Chart(ctx, {
+            const cvss_ctx = document.getElementById('cvss_Chart').getContext('2d');
+            const epss_ctx = document.getElementById('epss_Chart').getContext('2d');
+            const cvss_Chart = new Chart(cvss_ctx, {
                 type: 'bar',  
                 data: {
                     labels: cve_id,  // 레이블 데이터를 차트에 넣음
                     datasets: [{
                         label: '# of Votes',
                         data: cvss_val,  // 차트에 들어갈 실제 값
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',  
+                        borderColor: 'rgba(75, 192, 192, 1)', 
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true  
+                        }
+                    }
+                }
+            });
+            const epss_Chart = new Chart(epss_ctx, {
+                type: 'bar',  
+                data: {
+                    labels: cve_id,  // 레이블 데이터를 차트에 넣음
+                    datasets: [{
+                        label: '# of Votes',
+                        data: epss_val,  // 차트에 들어갈 실제 값
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',  
                         borderColor: 'rgba(75, 192, 192, 1)', 
                         borderWidth: 1
