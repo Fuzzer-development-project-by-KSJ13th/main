@@ -12,6 +12,12 @@ Python 3.9.0
 
 4.2.16
 
+# PATCH
+09/27
+  - cvss 그래프 구현
+09/30
+  - epss 그래프 구현
+
 ## 디렉토리 구조 
 .  
 ├── search_engine _` ← 기본 Project`_  
