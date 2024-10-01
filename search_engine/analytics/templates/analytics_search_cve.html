@@ -1,0 +1,96 @@
+<h1> 분석 기능 메인 화면입니다. </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<canvas id="cvss_Chart" width="400" height="200"></canvas>
+<canvas id="epss_Chart" width="400" height="200"></canvas>
+<script>
+    // 서버로부터 JSON 데이터를 가져오는 비동기 요청
+    fetch('/cvss-data/')
+        .then(response => response.json())  // JSON 응답을 파싱
+        .then(data => {
+            console.log(data);
+            const cve_id = data.cve_id; 
+            const cvss_val = data.cvss_value;
+            const epss_val = data.epss;
+
+            // CVSS 차트
+            const cvss_ctx = document.getElementById('cvss_Chart').getContext('2d');
+            const cvss_Chart = new Chart(cvss_ctx, {
+                type: 'bar',
+                data: {
+                    labels: cve_id,  // 레이블 데이터를 차트에 넣음
+                    datasets: [{
+                        label: 'CVSS Score',
+                        data: cvss_val,  // 차트에 들어갈 실제 값
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',  
+                        borderColor: 'rgba(75, 192, 192, 1)', 
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    onClick: function(event, activeElements) {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            const selectedCveId = cve_id[index];
+                            const url = `https://cvedb.shodan.io/cve/${selectedCveId}`;
+                            
+                            // CVE ID를 새 페이지에 출력
+                            const cveInfoWindow = window.open('', '_blank');
+                            cveInfoWindow.document.write(`<h1>${selectedCveId}</h1>`);
+                            cveInfoWindow.document.write(`<p><a href="${url}" target="_blank">More details</a></p>`);
+                        }
+                    }
+                }
+            });
+
+            // EPSS 차트
+            const epss_ctx = document.getElementById('epss_Chart').getContext('2d');
+            const epss_Chart = new Chart(epss_ctx, {
+                type: 'bar',
+                data: {
+                    labels: cve_id,  // 레이블 데이터를 차트에 넣음
+                    datasets: [{
+                        label: 'EPSS Score',
+                        data: epss_val,  // 차트에 들어갈 실제 값
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',  
+                        borderColor: 'rgba(153, 102, 255, 1)', 
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    onClick: function(event, activeElements) {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            const selectedCveId = cve_id[index];
+                            const url = `https://cvedb.shodan.io/cve/${selectedCveId}`;
+                            
+                            // CVE ID를 새 페이지에 출력
+                            const cveInfoWindow = window.open('', '_blank');
+                            cveInfoWindow.document.write(`<h1>${selectedCveId}</h1>`);
+                            cveInfoWindow.document.write(`<p><a href="${url}" target="_blank">More details</a></p>`);
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error:', error));  
+</script>
+</body>
+</html>
