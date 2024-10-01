@@ -1,1 +1,23 @@
-<h1> 검색 기능 메인 화면입니다 </h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search</title>
+</head>
+<body>
+    <h1>제품 이름으로 검색하기</h1>
+
+    <!-- input 필드 -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if name %}
+        <p>{{ name }}에 대한 검색 결과입니다.</p>
+    {% endif %}
+    
+
+
+</body>
+</html>
