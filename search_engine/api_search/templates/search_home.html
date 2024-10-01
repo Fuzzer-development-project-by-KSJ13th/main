@@ -13,12 +13,16 @@
         <button type="submit">Submit</button>
     </form>
 
-    <!-- 검색 결과 출력 -->
+    <!-- 검색 결과로 받아온 cpe 목록 출력 -->
     {% if name %}
         <p>{{ name }}에 대한 검색 결과입니다.</p>
         <ul>
             {% for cpe in api_response %}
-                <li>{{cpe}}</li>
+                <li>
+                    <a href="{% url 'get_cve_form_cpe' cpe%}">
+                        {{cpe}}
+                    </a>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}
