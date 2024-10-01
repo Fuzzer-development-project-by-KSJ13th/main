@@ -13,8 +13,14 @@
         <button type="submit">Submit</button>
     </form>
 
+    <!-- 검색 결과 출력 -->
     {% if name %}
         <p>{{ name }}에 대한 검색 결과입니다.</p>
+        <ul>
+            {% for cpe in api_response %}
+                <li>{{cpe}}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
     
 
