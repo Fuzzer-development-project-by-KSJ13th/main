@@ -16,3 +16,4 @@ urlpatterns = [
     path('cvss-data/', analytics.views.get_data, name='get-data'),
     path('accounts/', accounts.views.signup, name='register'),
 ]
+
