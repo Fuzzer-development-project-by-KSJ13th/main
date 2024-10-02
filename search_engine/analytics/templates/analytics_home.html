@@ -1,1 +1,9 @@
 <h1> 분석 기능 메인 화면입니다. </h1>
+<body>
+    <form id="contents" name="contents" method="post" action="{% url 'get-data' %}">
+        {% csrf_token %}
+        CPE : <input name="cpe" type="text">
+        <button type="button" onclick="send();">검색</button>
+    </form>
+</body>
+</html>

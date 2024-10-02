@@ -1,4 +1,4 @@
-<h1> 분석 기능 메인 화면입니다. </h1>
+<h1> 분석 그래프 출력 화면입니다. </h1>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +8,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<h2>{{cpe}}</h2>
 <canvas id="cvss_Chart" width="400" height="200"></canvas>
 <canvas id="epss_Chart" width="400" height="200"></canvas>
 <div id="cve-details"></div> <!-- CVE 상세 정보를 표시할 요소 추가 -->
 <script>
+
+    
     // 서버로부터 JSON 데이터를 가져오는 비동기 요청
-    fetch('/cvss-data/')
+    const urlParams = new URL(location.href).searchParams;
+    const param = urlParams.get('cpe');
+    let url = '/cvss-data/?cpe=' + encodeURIComponent(param);
+    fetch(url)
         .then(response => response.json())  // JSON 응답을 파싱
         .then(data => {
             const cve_id = data.cve_id; 

@@ -21,20 +21,29 @@
             margin-top: 20px;
             background-color: #fff;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            table-layout: fixed; /* 테이블 너비를 고정 */
         }
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            word-wrap: break-word;
         }
         th {
-            background-color: #4CAF50;
+            background-color: red;
             color: white;
         }
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+        th:first-child, td:first-child {
+            width: 15%;  /* 첫 번째 열의 가로 폭을 15%로 설정 */
+        }
         #summary {
+            line-height: 1.5;
+            font-weight: bold;
+        }
+        #references {
             line-height: 1.5;
         }
     </style>
@@ -52,13 +61,27 @@
             <td id="cvss-score"></td>
         </tr>
         <tr>
+            <th>CVSS_V2</th>
+            <td id="cvss_v2"></td>
+        </tr>
+        <tr>
+            <th>CVSS_V3</th>
+            <td id="cvss_v3"></td>
+        </tr>
+        <tr>
             <th>EPSS</th>
             <td id="epss"></td>
         </tr>
-        <!--<tr>
-            <th>CPEs</th>
-            <td id="cpes"></td>
-        </tr>-->
+        <tr>
+            <th>Published Time</th>
+            <td id="published_time"></td>
+        </tr>
+        
+        <tr>
+            <th>References</th>
+            <td id="references"></td>
+        </tr>
+        
     </table>
 
     <script>
@@ -74,7 +97,22 @@
                 document.getElementById('summary').textContent = data.summary;
                 document.getElementById('cvss-score').textContent = data.cvss_score;
                 document.getElementById('epss').textContent = data.epss;
-                document.getElementById('cpes').textContent = data.cpe; // 추가: cpes
+                document.getElementById('published_time').textContent = data.published_time;
+                //document.getElementById('references').textContent = data.references;
+                document.getElementById('cvss_v2').textContent = data.cvss_v2;
+                document.getElementById('cvss_v3').textContent = data.cvss_v3;
+
+
+                // References를 줄바꿈 포함하여 표시
+                const referencesElement = document.getElementById('references');
+                data.references.forEach(ref => {
+                    const refLink = document.createElement('a');
+                    refLink.href = ref;
+                    refLink.textContent = ref;
+                    refLink.style.display = 'block';  // 줄바꿈 추가
+                    referencesElement.appendChild(refLink);
+                });
+                
             })
             .catch(error => console.error('Error:', error));
     </script>
