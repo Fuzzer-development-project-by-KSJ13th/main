@@ -12,4 +12,3 @@ urlpatterns = [
     path('analytics/', analytics.views.analytics_home, name='analytics_home'),
     path('cvss-data/', analytics.views.get_data, name='get-data'),
 ]
-
