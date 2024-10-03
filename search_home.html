@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search</title>
+</head>
+<body>
+    <h1>제품 이름으로 검색하기</h1>
+
+    <!-- input 필드 -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- 최근 검색어 5개 출력 -->
+    <h2>최근 검색어</h2>
+    <ul>
+        {% for search in recent_searches %}
+            <li>{{ search.product_name }} - ({{ search.search_date|date:"Y-m-d H:i:s"}})</li>
+        {% endfor %}
+    </ul>
+
+    <!-- 검색 결과로 받아온 cpe 목록 출력 -->
+    {% if name %}
+        <p>{{ name }}에 대한 검색 결과입니다.</p>
+        <ul>
+            {% for cpe in api_response %}
+                <li>
+                    <a href="{% url 'get_cve_form_cpe' cpe%}">
+                        {{cpe}}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    
+
+</body>
+</html>
