@@ -12,15 +12,7 @@ def analytics_home(request):
     return render(request, 'analytics_search_cve.html', {'cpe':cpe})
 
 def get_data(request):
-    '''
-    if request.method == 'GET':
-        cpe = request.GET['cpe']
-    '''
-
-    #cpe = 'cpe:2.3:a:libpng:libpng:0.8'
-    #response = requests.get(f"https://cvedb.shodan.io/cves?cpe23={cpe}")
-    #response = requests.get(f"https://cvedb.shodan.io/cves?cpe23=cpe:2.3:a:libpng:libpng:0.8")
-    #response = requests.get(f"https://cvedb.shodan.io/cves")
+    print(request)
     if request.method == 'GET':
         cpe = request.GET.get('cpe')
     response = requests.get(f"https://cvedb.shodan.io/cves?cpe23={cpe}")
@@ -47,7 +39,6 @@ def get_data(request):
             data['published_time'].append(published_time)
             data['cvss_v2'].append(cvss_v2)
             data['cvss_v3'].append(cvss_v3)
-        
     return JsonResponse(data)
    #return render(request, 'analytics_search_cve.html', {'cpe':cpe,'cves':value})
 

@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="static/css/style.css">
+<div class="wrapper">
+  <div class="form">
+    <div class="title">
+      Login
+    </div>
+    <form method="post">
+      <div style="color:red;">
+        {% for message in messages %}
+            {{ message.tags }}! {{ message.message }}
+        {% endfor %}
+      </div>
+      <div class="input_wrap">
+          {% csrf_token %}
+          {{login_form}}
+      </div>
+      {% if messages %}
+{% endif %}
+      <button class="btn disabled input_wrap" style="padding: 15px" type="submit" >Login</button>
+    </form>
+      <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+  </div>
+</div>
