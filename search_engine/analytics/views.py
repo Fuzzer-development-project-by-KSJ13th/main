@@ -12,6 +12,7 @@ def analytics_home(request):
 
 
 def get_data(request):
+    print(request)
     if request.method == 'GET':
         cpe = request.GET.get('cpe')
     response = requests.get(f"https://cvedb.shodan.io/cves?cpe23={cpe}")
