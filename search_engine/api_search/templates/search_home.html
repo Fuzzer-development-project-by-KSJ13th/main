@@ -19,7 +19,7 @@
         <ul>
             {% for cpe in api_response %}
                 <li>
-                    <a href="{% url 'get_cve_form_cpe' cpe%}">
+                    <a href="/analytics/?cpe={{ cpe }}">
                         {{cpe}}
                     </a>
                 </li>

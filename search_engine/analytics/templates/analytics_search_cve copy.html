@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPE SEARCH</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<h1>
+    CVE List
+</h1>
+<h2>
+    CPE : {{cpe}}
+</h2>
+<body>
+    <!-- <p style="white-space: pre-line;">{{list}}</p> -->
+    <canvas id="cvssChart" width="400" height="200"></canvas>
+
+    <script>
+        fetch('/search/')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+        const cve = data.cves.map(cve => cve.cve_id);
+        const cvss = data.cves.map(cve => cve.cvss||0);
+        
+        const ctx = document.getElementById('cvssChart').getContext('2d');
+        const cvssChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: cve,
+                datasets: [{
+                    lavel: 'CVSS Score',
+                    data: cvss,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            option: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
+<!-- 각각의 CVE에 클릭 요소 구현 -->
+<!-- 전체 CVE의 CVSS와 EPSS를 그래프로 구현 -->

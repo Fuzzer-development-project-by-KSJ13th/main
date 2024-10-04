@@ -40,18 +40,4 @@ def search_cpe(name):
 
 
 def get_cve_form_cpe(request, cpe):
-    api_url = 'https://cvedb.shodan.io/cves'
-    params = {'cpe23' : cpe}
-    response = requests.get(api_url, params=params)
-    
-    # 응답 성공 여부 확인, JSON 응답 반환
-    if response.status_code == 200:
-        cve_list = response.json()
-    else:      # 에러 처리
-        error_message = response.text  
-        cve_list = {
-            'error': f"Error {response.status_code}: {error_message}"
-        }
-        print(f"API Error: {error_message}")  
-
-    return render(request, 'cve_list.html', {'cve_list': cve_list})
+    return render(request, 'analytics_search_cve.html', {'cpe':cpe})
