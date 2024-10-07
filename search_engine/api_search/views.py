@@ -27,13 +27,19 @@ def search_home(request):
 
             elif search_option == 'nvd':
                 api_response = search_cpe_nvd(name)
-
+                response_cpe_len = api_response['totalResults']
+                cpe_names = []
+                
                 # API 응답에서 cpe 항목만 추출
-                if api_response is not None and api_response['resultsPerPage'] > 0:
-                    api_response = api_response['products']
+                if api_response is not None and response_cpe_len > 0:
+                    for product in api_response.get('products', []):
+                        cpe = product.get('cpe', {})
+                        cpe_name = cpe.get('cpeName')
+                        if cpe_name:
+                            cpe_names.append(cpe_name)
+                    api_response = cpe_names
                 else:
                     api_response = None
-
             #검색 기록 저장(결과가 없더라도 저장)
             save_search_history(name, api_response)
 
