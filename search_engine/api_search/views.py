@@ -13,15 +13,33 @@ def search_home(request):
     if request.method == 'POST':
         form = NameForm(request.POST)
         if form.is_valid():
+            search_option = form.cleaned_data['search_option']
             name = form.cleaned_data['name']
-            api_response = search_cpe(name)
-            
-            # API 응답에서 cpe 항목만 추출
-            if api_response is not None and 'cpes' in api_response:
-                api_response = api_response['cpes']
-            else:
-                api_response = None
 
+            if search_option == 'shodan':
+                api_response = search_cpe(name)
+                
+                # API 응답에서 cpe 항목만 추출
+                if api_response is not None and 'cpes' in api_response:
+                    api_response = api_response['cpes']
+                else:
+                    api_response = None
+
+            elif search_option == 'nvd':
+                api_response = search_cpe_nvd(name)
+                response_cpe_len = api_response['totalResults']
+                cpe_names = []
+                
+                # API 응답에서 cpe 항목만 추출
+                if api_response is not None and response_cpe_len > 0:
+                    for product in api_response.get('products', []):
+                        cpe = product.get('cpe', {})
+                        cpe_name = cpe.get('cpeName')
+                        if cpe_name:
+                            cpe_names.append(cpe_name)
+                    api_response = cpe_names
+                else:
+                    api_response = None
             #검색 기록 저장(결과가 없더라도 저장)
             save_search_history(name, api_response)
 
@@ -38,7 +56,7 @@ def search_home(request):
                    'recent_searches': recent_searches})
 
 
-# 입력 제품명으로 cpe 검색
+# 입력 제품명으로 cpe 검색 at Shodan
 def search_cpe(name):
     api_url = 'https://cvedb.shodan.io/cpes'  
     params = {'product': name}  # API에 전달할 파라미터
@@ -49,6 +67,18 @@ def search_cpe(name):
         return response.json()
     else:
         return None
+    
+# 입력 제품명으로 cpe 검색 at NVD
+def search_cpe_nvd(name):
+    api_url = 'https://services.nvd.nist.gov/rest/json/cpes/2.0'
+    params = {'keywordSearch' : name}
+    response = requests.get(api_url, params=params)
+    
+    # 응답 성공 여부 확인, JSON 응답 반환
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None    
 
 # 검색 기록을 데이터베이스에 저장하는 함수
 def save_search_history(product_name, cpe_results):
