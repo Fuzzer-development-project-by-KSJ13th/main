@@ -6,6 +6,11 @@
 <body>
     <h1>제품 이름으로 검색하기</h1>
 
+    <!-- 로그인된 사용자에게만 -->
+    {% if user.is_authenticated %}
+        <p>안녕하세요, {{ user.username }}님!</p>s
+    {% endif %}
+
     <!-- input 필드 -->
     <form method="post">
         {% csrf_token %}
