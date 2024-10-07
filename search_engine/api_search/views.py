@@ -14,7 +14,8 @@ def search_home(request):
         form = NameForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            api_response = search_cpe(name)
+            search_term = name.lower()   #소문자로 변환하여 검색
+            api_response = search_cpe(search_term)
             
             # API 응답에서 cpe 항목만 추출
             if api_response is not None and 'cpes' in api_response:
@@ -59,13 +60,7 @@ def save_search_history(product_name, cpe_results):
     search_record = SearchHistory(product_name=product_name, cpe_result=cpe_results_json)
     search_record.save()
 
-    #최대 5개까지 유지하도록 검색 기록 관리
-    recent_count = SearchHistory.objects.count()
-    if recent_count > 5:
-        #가장 오래된 검색 기록 삭제
-        oldest_record = SearchHistory.objects.order_by('search_date').first()
-        if oldest_record:
-            oldest_record.delete()
+
 
 def get_cve_form_cpe(request, cpe):
     api_url = 'https://cvedb.shodan.io/cves'
