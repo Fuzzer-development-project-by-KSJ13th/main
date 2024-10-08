@@ -7,9 +7,9 @@ import json
 # search 기능 기본 화면
 def search_home(request):
     name = None
+    user_name = request.user
     api_response = None
-    recent_searches = SearchHistory.objects.all().order_by('-search_date')[:5]  # 최신 검색어 5개 가져오기
-    
+    recent_searches = SearchHistory.objects.filter(user=user_name).order_by('-search_date')[:5] 
     if request.method == 'POST':
         form = NameForm(request.POST)
         if form.is_valid():
@@ -40,11 +40,9 @@ def search_home(request):
                     api_response = cpe_names
                 else:
                     api_response = None
-            #검색 기록 저장(결과가 없더라도 저장)
-            save_search_history(name, api_response)
-
-            #최근 검색어 리스트 업데이트
-            recent_searches = SearchHistory.objects.all().order_by('-search_date')[:5]
+            
+            save_search_history(user_name, name)
+            recent_searches = SearchHistory.objects.filter(user=user_name).order_by('-search_date')[:5]
 
     else:
         form = NameForm()
@@ -81,21 +79,18 @@ def search_cpe_nvd(name):
         return None    
 
 # 검색 기록을 데이터베이스에 저장하는 함수
-def save_search_history(product_name, cpe_results):
-    # cpe_results를 JSON 문자열로 변환해 저장
-    cpe_results_json = json.dumps(cpe_results)
-    
-    # 검색 기록을 데이터베이스에 저장
-    search_record = SearchHistory(product_name=product_name, cpe_result=cpe_results_json)
-    search_record.save()
+def save_search_history(user, product_name):
+    search_history = SearchHistory.objects.create(user=user, product_name=product_name)
 
-    #최대 5개까지 유지하도록 검색 기록 관리
-    recent_count = SearchHistory.objects.count()
-    if recent_count > 5:
-        #가장 오래된 검색 기록 삭제
-        oldest_record = SearchHistory.objects.order_by('search_date').first()
-        if oldest_record:
-            oldest_record.delete()
+    search_history_count = SearchHistory.objects.filter(user=user).count()
+    if search_history_count > 5:
+        oldest_searches = SearchHistory.objects.filter(user=user).order_by('search_date')[:search_history_count - 5]
+        for search in oldest_searches:
+            search.delete()
+
+
+
+    return search_history
 
 def get_cve_form_cpe(request, cpe):
     api_url = 'https://cvedb.shodan.io/cves'
