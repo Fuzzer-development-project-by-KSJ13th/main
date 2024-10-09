@@ -1,5 +1,3 @@
-
-<!-- cve_detail.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,12 +75,14 @@
             <th>Published Time</th>
             <td id="published_time"></td>
         </tr>
-        
+        <tr>
+            <th>KEV</th>  <!-- KEV 항목 추가 -->
+            <td id="kev"></td>  <!-- KEV 값 표시 -->
+        </tr>
         <tr>
             <th>References</th>
             <td id="references"></td>
         </tr>
-        
     </table>
 
     <script>
@@ -102,6 +102,23 @@
                 document.getElementById('cvss_v2').textContent = data.cvss_v2;
                 document.getElementById('cvss_v3').textContent = data.cvss_v3;
 
+                const kevElement = document.getElementById('kev');
+                if (data.kev) {
+                    // 기본 URL 설정
+                    let kevLink = 'https://www.cve.org/CVERecord?id=';
+                    kevLink += data.cve_id;  // CVE ID 추가
+
+                    // 링크 요소 생성
+                    const linkElement = document.createElement('a');
+                    linkElement.href = kevLink;  // 완성된 링크 URL 설정
+                    linkElement.textContent = 'True(상세 보기)';
+                    linkElement.target = '_blank';  // 새 탭에서 링크 열기
+
+                    // KEV 요소에 링크 추가
+                    kevElement.appendChild(linkElement);
+                } else {
+                    kevElement.textContent = 'False';
+                }
 
                 // References를 줄바꿈 포함하여 표시
                 const referencesElement = document.getElementById('references');

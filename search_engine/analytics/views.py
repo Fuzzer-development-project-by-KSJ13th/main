@@ -12,14 +12,22 @@ def analytics_home(request):
     return render(request, 'analytics_search_cve.html', {'cpe':cpe})
 
 def get_data(request):
-    print(request)
+    '''
+    if request.method == 'GET':
+        cpe = request.GET['cpe']
+    '''
+
+    #cpe = 'cpe:2.3:a:libpng:libpng:0.8'
+    #response = requests.get(f"https://cvedb.shodan.io/cves?cpe23={cpe}")
+    #response = requests.get(f"https://cvedb.shodan.io/cves?cpe23=cpe:2.3:a:libpng:libpng:0.8")
+    #response = requests.get(f"https://cvedb.shodan.io/cves")
     if request.method == 'GET':
         cpe = request.GET.get('cpe')
     response = requests.get(f"https://cvedb.shodan.io/cves?cpe23={cpe}")
 
     if response.status_code == 200:
         api_data = response.json()
-        data = {'cve_id':[], 'cvss_value':[], 'epss':[], 'summary':[], 'references':[], 'published_time':[], 'cvss_v2':[], 'cvss_v3':[]}
+        data = {'cve_id':[], 'cvss_value':[], 'epss':[], 'summary':[], 'references':[], 'published_time':[], 'cvss_v2':[], 'cvss_v3':[], 'kev':[]}
         for x in range(len(api_data['cves'])):
             cve_num = api_data['cves'][x]['cve_id']
             cvss_val = api_data['cves'][x]['cvss']
@@ -29,6 +37,7 @@ def get_data(request):
             cvss_v2 = api_data['cves'][x]['cvss_v2']
             cvss_v3 = api_data['cves'][x]['cvss_v3']
             published_time = api_data['cves'][x]['published_time']
+            kev = api_data['cves'][x]['kev']
             
 
             data['cve_id'].append(cve_num)
@@ -39,6 +48,8 @@ def get_data(request):
             data['published_time'].append(published_time)
             data['cvss_v2'].append(cvss_v2)
             data['cvss_v3'].append(cvss_v3)
+            data['kev'].append(kev)
+        
     return JsonResponse(data)
    #return render(request, 'analytics_search_cve.html', {'cpe':cpe,'cves':value})
 
@@ -55,7 +66,8 @@ def cve_info(request, cve_id):
                 'references': cve_data.get('references', []),
                 'published_time':cve_data['published_time'],
                 'cvss_v2':cve_data['cvss_v2'],
-                'cvss_v3':cve_data['cvss_v3']
+                'cvss_v3':cve_data['cvss_v3'],
+                'kev':cve_data['kev']
             }
             return JsonResponse(data)
         else:
