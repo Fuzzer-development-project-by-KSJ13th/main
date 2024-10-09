@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages, auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from .models import Profile
 
 # Create your views here.
 
@@ -29,8 +30,20 @@ def login_request(request):
 
 def register_request(request):
     if request.method == "POST":
-        if request.POST['password1']==request.POST['password2']:
-            user=User.objects.create_user(request.POST['username'], password=request.POST['password1'])
-            auth.login(request,user)
+        if request.POST['password1'] == request.POST['password2']:
+            user = User.objects.create_user(
+                username=request.POST['username'],
+                password=request.POST['password1']
+            )
+            auth.login(request, user)
+            
+            # Profile 정보만 업데이트 (생성은 signals.py에서 자동으로 처리됨)
+            user.profile.birthdate = request.POST.get('birthdate')
+            user.profile.job = request.POST.get('job')
+            user.profile.nickname = request.POST.get('nickname')
+            user.profile.save()
+
             return redirect('/')
-    return render(request,'register.html')
+        else:
+            messages.error(request, "Passwords do not match.")
+    return render(request, 'register.html')

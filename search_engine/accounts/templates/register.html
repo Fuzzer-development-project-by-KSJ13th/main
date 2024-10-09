@@ -1,19 +1,31 @@
 <div class="container">
   <h1>회원가입</h1>
-  <form method="POST">
-  {% csrf_token %}
-    ID : 
+  <form action="" method="POST">
+    {% csrf_token %}
+    Username : 
     <input name="username" type="text" value="">
     <br>
     <br>
-    PW : 
+    Password : 
     <input name="password1" type="password" value="">
     <br>
     <br>
-    Confirm :
+    Confirm PW:
     <input name="password2" type="password" value="">
     <br>
     <br>
-    <input class="btn btn-primary" type="submit" value="회원가입">
+    닉네임:
+    <input name="nickname" type="text" value="">
+    <br>
+    <br>
+    생년월일:
+    <input name="birthdate" type="date" value="">
+    <br>
+    <br>
+    직업:
+    <input name="job" type="text" value="">
+    <br>
+    <br>
+    <input class="btn btn-primary" type="submit" value="Submit">
   </form>
 </div>
