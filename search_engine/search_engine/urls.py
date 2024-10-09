@@ -21,5 +21,6 @@ urlpatterns = [
     path('cvss-data/<str:cpe>/', analytics.views.get_data, name='get_cve_form_cpe'),
     path('cve-info/<str:cve_id>/', analytics.views.cve_info, name='cve_info'),
     path('cve-details/', TemplateView.as_view(template_name='cve_detail.html'), name='cve_details'),
-    path('logout/', LogoutView.as_view(next_page='/home'), name='logout'),  
+    path('logout/', LogoutView.as_view(next_page='/home'), name='logout'), 
+    path('charts/', home.views.charts, name="charts")
 ]
