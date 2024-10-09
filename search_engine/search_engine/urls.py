@@ -5,6 +5,7 @@ import api_search.views
 import analytics.views
 import accounts.views
 from django.views.generic import TemplateView
+from django.contrib.auth.views import LogoutView
 
 app_name = "home"
 
@@ -20,4 +21,5 @@ urlpatterns = [
     path('cvss-data/<str:cpe>/', analytics.views.get_data, name='get_cve_form_cpe'),
     path('cve-info/<str:cve_id>/', analytics.views.cve_info, name='cve_info'),
     path('cve-details/', TemplateView.as_view(template_name='cve_detail.html'), name='cve_details'),
+    path('logout/', LogoutView.as_view(next_page='/home'), name='logout'),  
 ]
